@@ -13,27 +13,28 @@ form.addEventListener('submit', (e) => {
     };
 
     fetch('/login', options)
-    .then(res => {
-        return res.json().then(data => ({
-            status: res.status,
-            message: data.message
-        }));
-    })
-    .then(({ status, message }) => {
-        if (status === 409 || status === 503 || status === 403) {
+        .then(async res => {
+            const data = await res.json();
+            return ({
+                status: res.status,
+                message: data.message
+            });
+        })
+        .then(({ status, message }) => {
+            if (status === 409 || status === 503 || status === 403) {
+                result.classList.add('text-danger');
+                result.innerHTML = message;
+            } else if (status === 201) {
+                result.classList.remove('text-danger');
+                result.classList.add('text-success');
+                result.innerHTML = message;
+                setTimeout(() => {
+                    window.location.href = ('/');
+                }, 2000);
+            }
+        })
+        .catch(error => {
             result.classList.add('text-danger');
-            result.innerHTML = message;
-        } else if (status === 201) {
-            result.classList.remove('text-danger');
-            result.classList.add('text-success');
-            result.innerHTML = message;
-            setTimeout(() => {
-                window.location.href = ('/');
-            }, 2000);
-        }
-    })
-    .catch(error => {
-        result.classList.add('text-danger');
-        result.innerHTML = error.message;
-    });
+            result.innerHTML = error.message;
+        });
 });

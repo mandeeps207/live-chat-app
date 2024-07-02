@@ -12,7 +12,7 @@ const __dirname = path.resolve();
 // Middleware setup
 app.set('view engine', 'ejs');
 app.use(express.json());
-app.use(bodyParser.urlencoded({ extended: true }));
+app.use(bodyParser.urlencoded({extended: true}));
 app.use(sessionMiddleware);
 app.set('views', path.join(__dirname, 'views'));
 
@@ -21,7 +21,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // App Routes
 app.get('/', (req, res) => {
-    res.render('home', { user: req.session.user });
+    res.render('home', {user: req.session.user});
 });
 
 app.get('/login', (req, res) => {
@@ -35,7 +35,7 @@ app.get('/logout', (req, res) => {
 
 // API Routes
 app.post('/login', (req, res) => {
-    const { username, password, formOption } = req.body;
+    const {username, password, formOption} = req.body;
 
     if (formOption === 'register') {
         const salt = bcrypt.genSaltSync(10);
@@ -44,16 +44,16 @@ app.post('/login', (req, res) => {
         addUser(username, hashedPass)
             .then(user => {
                 if (user) {
-                    req.session.user = { username: user.username };
-                    res.status(201).send({ message: 'User created successfully. Redirecting to chat dashboard.' });
+                    req.session.user = {username: user.username};
+                    res.status(201).send({message: 'User created successfully. Redirecting to chat dashboard.'});
                 }
             })
             .catch(error => {
                 if (error.code === '23505') { // PostgreSQL unique violation error code
-                    res.status(409).send({ message: 'User already exists. Please login or try different username.' });
+                    res.status(409).send({message: 'User already exists. Please login or try different username.'});
                 } else {
                     console.error(error);
-                    res.status(500).send({ message: 'Server error. Unable to register user.' });
+                    res.status(500).send({message: 'Server error. Unable to register user.'});
                 }
             });
     } else if (formOption === 'login') {
@@ -64,21 +64,21 @@ app.post('/login', (req, res) => {
                         .then(passwordMatch => {
                             if (passwordMatch) {
                                 req.session.user = { username: userLogin.username };
-                                res.status(200).send({ message: 'Login successfully. Redirecting to chat dashboard.' });
+                                res.status(201).send({message: 'Login successfully. Redirecting to chat dashboard.'});
                             } else {
-                                res.status(403).send({ message: 'Invalid username or password!' });
+                                res.status(403).send({message: 'Invalid username or password!'});
                             }
                         });
                 } else {
-                    res.status(403).send({ message: 'Invalid username or password!' });
+                    res.status(403).send({message: 'Invalid username or password!'});
                 }
             })
             .catch(error => {
                 console.error(error);
-                res.status(503).send({ message: 'Server error. Unable to login!' });
+                res.status(503).send({message: 'Server error. Unable to login!'});
             });
     } else {
-        res.status(400).send({ message: 'Invalid form option' });
+        res.status(400).send({message: 'Invalid form option'});
     }
 });
 
