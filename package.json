@@ -5,7 +5,8 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build:css": "npx tailwindcss -i ./public/main.css -o ./public/styles.css --watch"
   },
   "keywords": [],
   "author": "Mandeep Singh",
@@ -23,6 +24,9 @@
     "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "autoprefixer": "^10.4.19",
+    "nodemon": "^3.1.4",
+    "postcss": "^8.4.39",
+    "tailwindcss": "^3.4.4"
   }
 }
