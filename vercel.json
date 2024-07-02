@@ -10,7 +10,9 @@
     {
       "src": "/(.*)",
       "dest": "index.js",
-      "cache": false
+      "headers": {
+        "Cache-Control": "no-cache, no-store, must-revalidate"
+      }
     }
   ]
 }
