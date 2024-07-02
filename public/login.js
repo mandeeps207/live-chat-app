@@ -1,6 +1,6 @@
 // Login form handler
 const form = document.querySelector('#login-form');
-form.addEventListener('submit', async (e) => {
+form.addEventListener('submit', (e) => {
     e.preventDefault();
     const username = form.elements['username'].value;
     const password = form.elements['password'].value;
@@ -11,14 +11,19 @@ form.addEventListener('submit', async (e) => {
         headers: {'Content-Type': 'application/json'},
         body: JSON.stringify({username, password, formOption})
     };
-    try {
-        const res = await fetch('/login', options);
-        const {message} = await res.json();
-        if(res.status === 409 || 503 || 403) {
+
+    fetch('/login', options)
+    .then(res => {
+        return res.json().then(data => ({
+            status: res.status,
+            message: data.message
+        }));
+    })
+    .then(({ status, message }) => {
+        if (status === 409 || status === 503 || status === 403) {
             result.classList.add('text-danger');
             result.innerHTML = message;
-        }
-        if(res.status === 201) {
+        } else if (status === 201) {
             result.classList.remove('text-danger');
             result.classList.add('text-success');
             result.innerHTML = message;
@@ -26,8 +31,9 @@ form.addEventListener('submit', async (e) => {
                 window.location.href = ('/');
             }, 2000);
         }
-    } catch (error) {
+    })
+    .catch(error => {
         result.classList.add('text-danger');
         result.innerHTML = error.message;
-    }
+    });
 });

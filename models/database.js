@@ -6,15 +6,18 @@ const pool = createPool({
 });
 
 export async function query(text, params) {
-  const client = await pool.connect();
-  try {
-    const res = await client.query(text, params);
-    return res;
-  } catch (err) {
-    throw err;
-  } finally {
-    client.release();
-  }
+  return pool.connect()
+  .then(async client => {
+    return client.query(text, params)
+      .then(res => {
+        client.release();
+        return res;
+      })
+      .catch(err => {
+        client.release();
+        throw err;
+      });
+  });
 }
 
 // Create table for users

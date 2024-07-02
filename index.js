@@ -34,39 +34,51 @@ app.get('/logout', (req, res) => {
 });
 
 // API Routes
-app.post('/login', async (req, res) => {
+app.post('/login', (req, res) => {
     const { username, password, formOption } = req.body;
+
     if (formOption === 'register') {
-        try {
-            const salt = bcrypt.genSaltSync(10);
-            const hashedPass = bcrypt.hashSync(password, salt);
-            const user = await addUser(username, hashedPass);
-            if (user) {
-                req.session.user = {username: user.username};
-                res.status(201).send({message: 'User created successfully. Redirecting to chat dashboard.'});  
-            }
-        } catch (error) {
-            res.status(409).send({message: 'User already exists. Please login or try different username.'});
-        }
+        const salt = bcrypt.genSaltSync(10);
+        const hashedPass = bcrypt.hashSync(password, salt);
+
+        addUser(username, hashedPass)
+            .then(user => {
+                if (user) {
+                    req.session.user = { username: user.username };
+                    res.status(201).send({ message: 'User created successfully. Redirecting to chat dashboard.' });
+                }
+            })
+            .catch(error => {
+                if (error.code === '23505') { // PostgreSQL unique violation error code
+                    res.status(409).send({ message: 'User already exists. Please login or try different username.' });
+                } else {
+                    console.error(error);
+                    res.status(500).send({ message: 'Server error. Unable to register user.' });
+                }
+            });
     } else if (formOption === 'login') {
-        try {
-            const userLogin = await getUser(username, password);
-            if (userLogin) {
-              if (await bcrypt.compare(password, userLogin.password)) {
-                req.session.user = { username: userLogin.username };
-                res.status(201).send({ message: 'Login successfully. Redirecting to chat dashboard.' });
-              } else {
-                res.status(403).send({ message: 'Invalid username or password!' });
-              }
-            } else {
-              res.status(403).send({ message: 'Invalid username or password!' });
-            }
-        } catch (error) {
-            console.log(error.detail);
-            res.status(503).send({ message: 'Server Error. Unable to login!' });
-        }            
+        getUser(username)
+            .then(userLogin => {
+                if (userLogin) {
+                    return bcrypt.compare(password, userLogin.password)
+                        .then(passwordMatch => {
+                            if (passwordMatch) {
+                                req.session.user = { username: userLogin.username };
+                                res.status(200).send({ message: 'Login successfully. Redirecting to chat dashboard.' });
+                            } else {
+                                res.status(403).send({ message: 'Invalid username or password!' });
+                            }
+                        });
+                } else {
+                    res.status(403).send({ message: 'Invalid username or password!' });
+                }
+            })
+            .catch(error => {
+                console.error(error);
+                res.status(503).send({ message: 'Server error. Unable to login!' });
+            });
     } else {
-        return res.status(400).send({ status: 400, message: 'Invalid form option' });
+        res.status(400).send({ message: 'Invalid form option' });
     }
 });
 
