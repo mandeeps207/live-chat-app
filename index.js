@@ -10,7 +10,10 @@ const __dirname = path.resolve();
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(sessionMiddleware);
+app.use(sessionMiddleware, (req, res, next) => {
+    res.header('Content-Security-Policy', "script-src 'self';");
+    next();
+});
 app.set('views', path.join(__dirname, 'views'));
 
 // Serve static files
