@@ -13,20 +13,12 @@ form.addEventListener('submit', async (e) => {
     };
     try {
         const res = await fetch('/login', options);
-        const {status, message} = await res.json();
-        if(status === 409) {
+        const {message} = await res.json();
+        if(res.status === 409 || 503 || 403) {
             result.classList.add('text-danger');
             result.innerHTML = message;
         }
-        if(status === 503) {
-            result.classList.add('text-danger');
-            result.innerHTML = message;
-        }
-        if(status === 403) {
-            result.classList.add('text-danger');
-            result.innerHTML = message;
-        }
-        if(status === 200) {
+        if(res.status === 201) {
             result.classList.remove('text-danger');
             result.classList.add('text-success');
             result.innerHTML = message;

@@ -3,7 +3,7 @@ import path from 'path';
 import sessionMiddleware from './models/session.js';
 import bodyParser from 'body-parser';
 import 'dotenv/config';
-import db from './models/database.js';
+import {addUser, getUser} from './models/database.js';
 import bcrypt from 'bcryptjs/dist/bcrypt.js';
 
 const app = express();
@@ -34,46 +34,37 @@ app.get('/logout', (req, res) => {
 });
 
 // API Routes
-app.post('/login', (req, res) => {
+app.post('/login', async (req, res) => {
     const { username, password, formOption } = req.body;
-
     if (formOption === 'register') {
-        db.get('SELECT username FROM users WHERE username = ?', [username], (err, row) => {
-            if (err) {
-                return res.status(500).send({ status: 503, message: 'Database error' });
+        try {
+            const salt = bcrypt.genSaltSync(10);
+            const hashedPass = bcrypt.hashSync(password, salt);
+            const user = await addUser(username, hashedPass);
+            if (user) {
+                req.session.user = {username: user.username};
+                res.status(201).send({message: 'User created successfully. Redirecting to chat dashboard.'});  
             }
-            if (row) {
-                return res.status(409).send({ status: 409, message: 'Username already exists. Please choose a different one or try login option.' });
-            } else {
-                const salt = bcrypt.genSaltSync(10);
-                const hashedPass = bcrypt.hashSync(password, salt);
-                db.run('INSERT INTO users (username, password) VALUES (?, ?)', [username, hashedPass], (err) => {
-                    if (err) {
-                        return res.status(503).send({ status: 503, message: 'Error in creating account.' });
-                    } else {
-                        req.session.user = { username };
-                        return res.status(200).send({ status: 200, message: 'Account created and logging to chatroom.' });
-                    }
-                });
-            }
-        });
+        } catch (error) {
+            res.status(409).send({message: 'User already exists. Please login or try different username.'});
+        }
     } else if (formOption === 'login') {
-        db.get('SELECT * FROM users WHERE username = ?', [username], (err, row) => {
-            if (err) {
-                return res.status(500).send({ status: 503, message: 'Database error' });
-            }
-            if (!row) {
-                return res.status(403).send({ message: 'Invalid username or password', status: 403 });
+        try {
+            const userLogin = await getUser(username, password);
+            if (userLogin) {
+              if (await bcrypt.compare(password, userLogin.password)) {
+                req.session.user = { username: userLogin.username };
+                res.status(201).send({ message: 'Login successfully. Redirecting to chat dashboard.' });
+              } else {
+                res.status(403).send({ message: 'Invalid username or password!' });
+              }
             } else {
-                const isValid = bcrypt.compareSync(password, row.password);
-                if (isValid) {
-                    req.session.user = { username: row.username };
-                    return res.status(200).send({ message: 'Login successfully!', status: 200 });
-                } else {
-                    return res.status(403).send({ message: 'Invalid username or password', status: 403 });
-                }
+              res.status(403).send({ message: 'Invalid username or password!' });
             }
-        });
+        } catch (error) {
+            console.log(error.detail);
+            res.status(503).send({ message: 'Server Error. Unable to login!' });
+        }            
     } else {
         return res.status(400).send({ status: 400, message: 'Invalid form option' });
     }
