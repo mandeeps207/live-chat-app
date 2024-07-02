@@ -1,8 +1,10 @@
 import sqlite3 from 'sqlite3';
 sqlite3.verbose();
+import path from 'path';
+const __dirname = path.resolve();
 
 // User database setup
-const db = new sqlite3.Database('userDb.db');
+const db = new sqlite3.Database(__dirname + '/userDb.db');
 
 db.serialize(() => {
     db.run("CREATE TABLE IF NOT EXISTS users (id INTEGER PRIMARY KEY, username TEXT UNIQUE, password TEXT, uuid TEXT UNIQUE)");
