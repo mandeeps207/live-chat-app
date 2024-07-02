@@ -6,15 +6,6 @@
   "scripts": {
     "start": "node app.js"
   },
-  "builds": [
-    {
-      "src": "app.js",
-      "use": "@vercel/node-build",
-      "config": {
-        "runtime": "nodejs20"
-      }
-    }
-  ],
   "keywords": [
     "live",
     "chat",
