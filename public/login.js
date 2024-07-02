@@ -18,6 +18,10 @@ form.addEventListener('submit', async (e) => {
             result.classList.add('text-danger');
             result.innerHTML = message;
         }
+        if(status === 503) {
+            result.classList.add('text-danger');
+            result.innerHTML = message;
+        }
         if(status === 403) {
             result.classList.add('text-danger');
             result.innerHTML = message;
