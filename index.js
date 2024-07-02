@@ -2,6 +2,7 @@ import express from 'express';
 import path from 'path';
 import sessionMiddleware from './models/session.js';
 import bodyParser from 'body-parser';
+import 'dotenv/config';
 
 const app = express();
 const __dirname = path.resolve();
@@ -10,19 +11,15 @@ const __dirname = path.resolve();
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(sessionMiddleware, (req, res, next) => {
-    res.header('Content-Security-Policy', "script-src 'self';");
-    next();
-});
+app.use(sessionMiddleware);
 app.set('views', path.join(__dirname, 'views'));
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
 // App Routes
-app.get('/', (req, res, next) => {
+app.get('/', (req, res) => {
     res.render('home', {user: req.session.user});
-    next();
 });
 app.get('/register', (req, res) => {
     res.send('Future register page!');
@@ -37,7 +34,7 @@ app.get('/logout', (req, res) => {
 });
 
 // Initiating server
-const port = process.env.PORT || 5000;
+const port = process.env.PORT;
 app.listen(port, () => {
     console.log(`App is running on port ${port}`);
 });
