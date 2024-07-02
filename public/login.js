@@ -6,7 +6,6 @@ form.addEventListener('submit', async (e) => {
     const password = form.elements['password'].value;
     const result = document.querySelector('#error');
     const formOption = form.elements['loginOption'].value;
-    console.log(username, password, formOption);
     let options = {
         method: 'POST',
         headers: {'Content-Type': 'application/json'},
