@@ -15,6 +15,7 @@
   "license": "ISC",
   "description": "This is live chat app created by Mandeep. Socket.io and Tailwind css",
   "dependencies": {
+    "ejs": "^3.1.10",
     "express": "^4.19.2"
   }
 }
