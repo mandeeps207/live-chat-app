@@ -6,8 +6,9 @@ const sessionOptions = {
     resave: false,
     saveUninitialized: true,
     cookie: { 
-        secure: false,
-        sameSite: 'None'
+        secure: true,
+        sameSite: 'None',
+        maxAge: 86400, // 24 hours
     }
 };
 
