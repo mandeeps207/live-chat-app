@@ -5,17 +5,26 @@
   "main": "index.js",
   "scripts": {
     "start": "node index.js",
-    "dev": "nodemon index.js"
+    "dev": "nodemon index.js",
+    "build:css": "npx tailwindcss -i ./public/styles.css -o ./public/output.css --watch"
   },
   "keywords": [],
   "author": "Mandeep Singh",
   "license": "ISC",
   "description": "This is live chat app created by Mandeep. Socket.io and Tailwind css",
   "dependencies": {
+    "bcryptjs": "^2.4.3",
+    "body-parser": "^1.20.2",
+    "dotenv": "^16.4.5",
     "ejs": "^3.1.10",
-    "express": "^4.19.2"
+    "express": "^4.19.2",
+    "express-session": "^1.18.0",
+    "socket.io": "^4.7.5",
+    "sqlite3": "^5.1.7",
+    "uuid": "^10.0.0"
   },
   "devDependencies": {
-    "nodemon": "^3.1.4"
+    "nodemon": "^3.1.4",
+    "tailwindcss": "^3.4.4"
   }
 }

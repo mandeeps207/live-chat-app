@@ -1,1 +1,0 @@
-document.querySelector('#demo').innerHTML = "Coming from main.js file!";
