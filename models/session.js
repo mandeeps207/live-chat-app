@@ -6,7 +6,7 @@ const sessionOptions = {
     resave: false,
     saveUninitialized: true,
     cookie: { 
-        secure: true,
+        secure: false,
         sameSite: 'None'
     }
 };

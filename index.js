@@ -18,7 +18,6 @@ app.use(express.static(path.join(__dirname, 'public')));
 
 // App Routes
 app.get('/', (req, res, next) => {
-    // req.session.user = {username: "Mandeep Singh"};
     res.render('home', {user: req.session.user});
     next();
 });
