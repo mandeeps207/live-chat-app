@@ -1,12 +1,15 @@
 import express from 'express';
+import path from 'path';
 
 const app = express();
+const __dirname = path.resolve();
 
 // Middleware setup
-app.set("view engine", "ejs");
+app.set('view engine', 'ejs');
+app.set('views', path.join(__dirname, 'views'));
 
-app.get("/", (req, res) => {
-    res.render("home");
+app.get('/', (req, res) => {
+    res.render('home');
 });
 
 // Initiating server
