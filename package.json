@@ -6,11 +6,7 @@
   "scripts": {
     "start": "node index.js"
   },
-  "keywords": [
-    "live",
-    "chat",
-    "app"
-  ],
+  "keywords": [],
   "author": "Mandeep Singh",
   "license": "ISC",
   "description": "This is live chat app created by Mandeep. Socket.io and Tailwind css",

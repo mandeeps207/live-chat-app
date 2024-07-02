@@ -2,7 +2,7 @@ import express from 'express';
 
 const app = express();
 
-// Middelwares setup
+// Middleware setup
 app.set("view engine", "ejs");
 
 app.get("/", (req, res) => {
