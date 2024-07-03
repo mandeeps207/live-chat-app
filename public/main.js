@@ -1,4 +1,4 @@
-const socket = io(window.location.origin, {
+const socket = io('https://live-chat-app-mandeep.vercel.app/', {
     autoConnect: false
 });
 
