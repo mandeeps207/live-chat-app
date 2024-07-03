@@ -28,7 +28,15 @@ const queryText = `
         password VARCHAR(100)
       );
     `;
+const queryText2 = `
+    CREATE TABLE IF NOT EXISTS user_sessions (
+      sid VARCHAR NOT NULL PRIMARY KEY,
+      sess JSON NOT NULL,
+      expire TIMESTAMPTZ NOT NULL
+    );
+  `;    
 query(queryText);
+query(queryText2);
 
 // Add user
 export async function addUser(username, password) {
