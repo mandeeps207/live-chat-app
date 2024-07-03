@@ -20,6 +20,18 @@ app.use(bodyParser.urlencoded({extended: true}));
 app.use(sessionMiddleware);
 app.set('views', path.join(__dirname, 'views'));
 
+// Socket.io middelware
+io.use((socket, next) => {
+    const user = socket.handshake.auth.user;
+    const id = socket.handshake.auth.id;
+    if(!user) {
+        return next(new Error('Invalid username'));
+    }
+    socket.username = user;
+    socket.id = id;
+    next();
+});
+
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));
 
@@ -49,6 +61,7 @@ app.post('/login', (req, res) => {
             .then(user => {
                 if (user) {
                     req.session.user = {username: user.username};
+                    req.session.userId = {userId: user.id};
                     res.status(201).send({message: 'User created successfully. Redirecting to chat dashboard.'});
                 }
             })
@@ -67,7 +80,7 @@ app.post('/login', (req, res) => {
                     return bcrypt.compare(password, userLogin.password)
                         .then(passwordMatch => {
                             if (passwordMatch) {
-                                req.session.user = { username: userLogin.username };
+                                req.session.user = {username: userLogin.username, userId: userLogin.id};
                                 res.status(201).send({message: 'Login successfully. Redirecting to chat dashboard.'});
                             } else {
                                 res.status(403).send({message: 'Invalid username or password!'});
@@ -83,6 +96,20 @@ app.post('/login', (req, res) => {
             });
     } else {
         res.status(400).send({message: 'Invalid form option'});
+    }
+});
+app.get('/userdata', (req, res) => {
+    if(req.session.user) {
+        const {username, userId} = req.session.user;
+        res.status(200).send({
+            username,
+            userId
+        });
+    } else {
+        res.status(200).send({
+            username: null,
+            userId: null
+        });
     }
 });
 
