@@ -6,7 +6,7 @@ const sessionOptions = {
     resave: false,
     saveUninitialized: true,
     cookie: { 
-        secure: false,
+        secure: true, // Set true for HTTPS
         sameSite: 'Strict',
     }
 };

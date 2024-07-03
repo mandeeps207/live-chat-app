@@ -29,7 +29,6 @@ io.use((socket, next) => {
     }
     socket.username = user;
     socket.id = id;
-    console.log('handshake', socket.username, socket.id);
     next();
 });
 
