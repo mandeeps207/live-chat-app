@@ -7,8 +7,6 @@ const sessionOptions = {
     saveUninitialized: true,
     cookie: { 
         secure: true, // Set true for HTTPS
-        sameSite: 'Strict',
-        domain: '.(https://live-chat-app-theta-puce.vercel.app/)'
     }
 };
 
