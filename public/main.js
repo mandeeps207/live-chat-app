@@ -16,6 +16,7 @@ fetch('/userdata')
         console.log(username, userId);
         const conn = new socketMethods();
         conn.socketConnect(username, userId);
+        return;
     }
 })
 .catch(error => {
