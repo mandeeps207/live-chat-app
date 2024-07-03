@@ -29,6 +29,7 @@ io.use((socket, next) => {
     }
     socket.username = user;
     socket.id = id;
+    console.log('handshake', socket.username, socket.id);
     next();
 });
 
@@ -60,8 +61,7 @@ app.post('/login', (req, res) => {
         addUser(username, hashedPass)
             .then(user => {
                 if (user) {
-                    req.session.user = {username: user.username};
-                    req.session.userId = {userId: user.id};
+                    req.session.user = {username: user.username, userId: user.id};
                     res.status(201).send({message: 'User created successfully. Redirecting to chat dashboard.'});
                 }
             })
