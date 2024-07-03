@@ -1,6 +1,6 @@
 import express from 'express';
 import path from 'path';
-import sessionMiddleware from './models/session.js';
+import sessionMids from './models/session.js';
 import bodyParser from 'body-parser';
 import 'dotenv/config';
 import {addUser, getUser} from './models/database.js';
@@ -10,14 +10,17 @@ import { Server } from "socket.io";
 
 const app = express();
 const httpServer = createServer(app);
-const io = new Server(httpServer);
+const io = new Server(httpServer, {
+    origin: process.env.SOCKET_IO_ORIGIN,
+    path: `/${process.env.SOCKET_IO_ORIGIN}/`
+});
 const __dirname = path.resolve();
 
 // Middleware setup
 app.set('view engine', 'ejs');
 app.use(express.json());
 app.use(bodyParser.urlencoded({extended: true}));
-app.use(sessionMiddleware);
+app.use(sessionMids);
 app.set('views', path.join(__dirname, 'views'));
 
 // Socket.io middelware
@@ -30,6 +33,10 @@ io.use((socket, next) => {
     socket.username = user;
     socket.id = id;
     next();
+});
+// Handle Socket.IO connection with session middleware
+io.use((socket, next) => {
+    sessionMiddleware(socket.request, {}, next);
 });
 
 // Serve static files

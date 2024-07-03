@@ -22,6 +22,6 @@ const sessionOptions = {
     }
 };
 
-const sessionMiddleware = session(sessionOptions);
+const sessionMids = session(sessionOptions);
 
-export default sessionMiddleware;
+export default sessionMids;
