@@ -117,12 +117,6 @@ io.on("connection", (socket) => {
     // ...
 });
 
-// Error Handling Middleware
-app.use((err, req, res, next) => {
-    console.error(err.stack);
-    res.status(500).send('Something broke!');
-});
-
 // Initiating server
 const port = process.env.PORT || 3000;
 httpServer.listen(port, () => {

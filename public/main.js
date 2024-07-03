@@ -1,22 +1,14 @@
 const socket = io(window.location.origin, {
     autoConnect: false
 });
-// Socket methods
-class socketMethods {
-    async socketConnect(user, id) {
-        socket.auth = {user, id}
-        await socket.connect();
-    }
-}
 
 fetch('/userdata')
 .then(response => response.json())
 .then(({username, userId}) => {
     if (userId !== null) {
         console.log(username, userId);
-        const conn = new socketMethods();
-        conn.socketConnect(username, userId);
-        return;
+        socket.auth = {user: username, id: userId};
+        socket.connect();
     }
 })
 .catch(error => {
