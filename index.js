@@ -5,8 +5,12 @@ import bodyParser from 'body-parser';
 import 'dotenv/config';
 import {addUser, getUser} from './models/database.js';
 import bcrypt from 'bcryptjs/dist/bcrypt.js';
+import { createServer } from "http";
+import { Server } from "socket.io";
 
 const app = express();
+const httpServer = createServer(app);
+const io = new Server(httpServer);
 const __dirname = path.resolve();
 
 // Middleware setup
@@ -82,6 +86,11 @@ app.post('/login', (req, res) => {
     }
 });
 
+// Socket connection
+io.on("connection", (socket) => {
+    // ...
+});
+
 // Error Handling Middleware
 app.use((err, req, res, next) => {
     console.error(err.stack);
@@ -90,6 +99,6 @@ app.use((err, req, res, next) => {
 
 // Initiating server
 const port = process.env.PORT || 3000;
-app.listen(port, () => {
+httpServer.listen(port, () => {
     console.log(`App is running on port ${port}`);
 });
