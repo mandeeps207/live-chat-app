@@ -5,7 +5,7 @@ import bodyParser from 'body-parser';
 import 'dotenv/config';
 import {addUser, getUser} from './models/database.js';
 import bcrypt from 'bcryptjs/dist/bcrypt.js';
-import { createServer } from "http";
+import { createServer } from "https";
 import { Server } from "socket.io";
 
 const app = express();
