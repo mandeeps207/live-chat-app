@@ -11,8 +11,7 @@ import { Server } from "socket.io";
 const app = express();
 const httpServer = createServer(app);
 const io = new Server(httpServer, {
-    origin: process.env.SOCKET_IO_ORIGIN,
-    path: `/${process.env.SOCKET_IO_ORIGIN}/`
+    cookie: true
 });
 const __dirname = path.resolve();
 
