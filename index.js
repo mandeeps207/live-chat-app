@@ -34,9 +34,7 @@ io.use((socket, next) => {
     next();
 });
 // Handle Socket.IO connection with session middleware
-io.use((socket, next) => {
-    sessionMiddleware(socket.request, {}, next);
-});
+io.engine.use(sessionMids);
 
 // Serve static files
 app.use(express.static(path.join(__dirname, 'public')));

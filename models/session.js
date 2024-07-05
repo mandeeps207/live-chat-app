@@ -15,8 +15,8 @@ const sessionOptions = {
         tableName: 'user_sessions' // Use a different table name if desired
     }),
     secret: process.env.SESSION_KEY,
-    resave: false,
-    saveUninitialized: false,
+    resave: true,
+    saveUninitialized: true,
     cookie: { 
         maxAge: 30 * 24 * 60 * 60 * 1000, // 30 Days
     }
